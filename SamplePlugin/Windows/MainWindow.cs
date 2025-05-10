@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
@@ -10,7 +10,6 @@ namespace SamplePlugin.Windows;
 
 public class MainWindow : Window, IDisposable
 {
-    private string GoatImagePath;
     private Plugin Plugin;
 
     // We give this window a hidden ID using ##
@@ -25,7 +24,6 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
-        GoatImagePath = goatImagePath;
         Plugin = plugin;
     }
 
@@ -33,15 +31,9 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        // Do not use .Text() or any other formatted function like TextWrapped(), or SetTooltip().
-        // These expect formatting parameter if any part of the text contains a "%", which we can't
-        // provide through our bindings, leading to a Crash to Desktop.
-        // Replacements can be found in the ImGuiHelpers Class
-        ImGui.TextUnformatted($"The random config bool is {Plugin.Configuration.SomePropertyToBeSavedAndWithADefault}");
-
-        if (ImGui.Button("Show Settings"))
+        if (ImGui.Button("Show New Window"))
         {
-            Plugin.ToggleConfigUI();
+            Plugin.ToggleNewWindow();
         }
 
         ImGui.Spacing();
@@ -54,22 +46,6 @@ public class MainWindow : Window, IDisposable
             // Check if this child is drawing
             if (child.Success)
             {
-                ImGui.TextUnformatted("Have a goat:");
-                var goatImage = Plugin.TextureProvider.GetFromFile(GoatImagePath).GetWrapOrDefault();
-                if (goatImage != null)
-                {
-                    using (ImRaii.PushIndent(55f))
-                    {
-                        ImGui.Image(goatImage.ImGuiHandle, new Vector2(goatImage.Width, goatImage.Height));
-                    }
-                }
-                else
-                {
-                    ImGui.TextUnformatted("Image not found.");
-                }
-
-                ImGuiHelpers.ScaledDummy(20.0f);
-
                 // Example for other services that Dalamud provides.
                 // ClientState provides a wrapper filled with information about the local player object and client.
 
